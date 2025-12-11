@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga: Feste und Geschenke</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Calibri, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin: 20px 0 15px 0;
+            font-size: 1.3em;
+        }
+
+        .league-select {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .league-btn {
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: white;
+        }
+
+        .league-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .silver { background: linear-gradient(135deg, #C0C0C0, #E8E8E8); color: #333; }
+        .gold { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .diamond { background: linear-gradient(135deg, #00D4FF, #0099CC); }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .reading-text {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.8;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        mark {
+            background: #fff3cd;
+            color: #856404;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        details {
+            margin: 15px 0;
+        }
+
+        details summary {
+            cursor: pointer;
+            padding: 12px 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #667eea;
+            border: 2px solid #667eea;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        details summary:hover {
+            background: #e6edff;
+        }
+
+        details[open] summary {
+            background: #667eea;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .gap-input {
+            display: inline-block;
+            min-width: 100px;
+            padding: 5px 10px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: Calibri, Arial, sans-serif;
+            text-align: center;
+            margin: 0 3px;
+        }
+
+        .gap-input.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .gap-input.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .gap-choice-container {
+            display: inline-flex;
+            gap: 5px;
+            margin: 0 3px;
+            vertical-align: middle;
+        }
+
+        .gap-choice-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: Calibri, Arial, sans-serif;
+        }
+
+        .gap-choice-btn:hover:not(:disabled) {
+            background: #f0f4ff;
+            transform: scale(1.05);
+        }
+
+        .gap-choice-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .gap-choice-btn.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .gap-choice-btn.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .gap-choice-btn.gap-choice-correct {
+            background: #28a745 !important;
+            color: white !important;
+            border: 2px solid #28a745 !important;
+            cursor: not-allowed !important;
+        }
+
+        .question-card {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .option-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option-btn.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .word-chip {
+            padding: 10px 15px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1em;
+        }
+
+        .word-chip:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .word-chip.used {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .sentence-display {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            min-height: 60px;
+            border: 2px dashed #667eea;
+            margin: 15px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+            font-size: 1.1em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f0f4ff;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.wrong {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .statement-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .statement-text {
+            flex: 1;
+            font-size: 1em;
+        }
+
+        .tf-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tf-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .tf-btn:hover {
+            background: #f0f4ff;
+        }
+
+        .tf-btn.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .tf-btn.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .tf-btn.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        #certificate {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        #certificate h1 {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .cert-details {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .cert-details p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .intro-text {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .league-btn {
+                padding: 15px;
+                font-size: 1.1em;
+            }
+
+            .gap-input {
+                min-width: 80px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen">
+            <h1>🎉 Liga: Feste und Geschenke 🎁</h1>
+            <div class="intro-text">
+                <strong>In dieser Liga übst du:</strong><br>
+                ✓ Texte lesen und verstehen<br>
+                ✓ Geschenke geben: "Ich schenke dir/ihm/ihr..."<br>
+                ✓ Dativ und Akkusativ richtig benutzen
+            </div>
+            
+            <div class="question-card" style="margin: 20px 0;">
+                <label for="nameInput" style="display: block; font-weight: bold; margin-bottom: 10px; font-size: 1.1em;">
+                    📝 Dein Name:
+                </label>
+                <input type="text" id="nameInput" class="gap-input" 
+                       style="width: 90%; font-size: 1.1em; padding: 12px;" 
+                       placeholder="z.B. Sara Müller"
+                       onkeypress="if(event.key==='Enter') document.querySelector('.league-select').scrollIntoView()">
+            </div>
+            
+            <h2>Wähle deine Liga:</h2>
+            <div class="league-select">
+                <button class="league-btn silver" onclick="startLeague('silver')">
+                    🥈 Silber-Liga<br><small>Geburtstagsfest</small>
+                </button>
+                <button class="league-btn gold" onclick="startLeague('gold')">
+                    🥇 Gold-Liga<br><small>Hochzeitsfeier</small>
+                </button>
+                <button class="league-btn diamond" onclick="startLeague('diamond')">
+                    💎 Diamant-Liga<br><small>Weihnachten & Schulabschluss</small>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h1 id="leagueTitle" style="margin: 0; flex: 1;"></h1>
+                <button onclick="goHome()" style="background: #ff6b6b; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.9em;">
+                    🏠 Home
+                </button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar">0/40</div>
+            </div>
+            <div id="taskContainer"></div>
+        </div>
+
+        <!-- Certificate -->
+        <div id="certificate" class="hidden">
+            <h1>🏆 Herzlichen Glückwunsch! 🏆</h1>
+            <div class="cert-details">
+                <p style="font-size: 1.3em; color: #667eea; margin-bottom: 15px;">
+                    <strong><span id="certName"></span></strong>
+                </p>
+                <p><strong>Du hast die <span id="certLeague"></span> erfolgreich abgeschlossen!</strong></p>
+                <p>📊 Punktzahl: <span id="certScore"></span></p>
+                <p>📅 Datum: <span id="certDate"></span></p>
+            </div>
+            <button class="btn-primary" onclick="downloadCertificate()">📥 Zertifikat herunterladen (PNG)</button>
+            <button class="btn-primary" onclick="location.reload()" style="margin-top: 10px; background: linear-gradient(135deg, #28a745, #20c997);">🔄 Neue Liga starten</button>
+        </div>
+    </div>
+
+    <script data-goatcounter="https://aguitoo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <script>
+        const leagues = {
+            silver: {
+                name: "🥈 Silber-Liga",
+                color: "#C0C0C0",
+                gapChoices: [
+                    { correct: "ihren", wrong: "seinen" },
+                    { correct: "ihr", wrong: "ihm" },
+                    { correct: "dir", wrong: "dich" },
+                    { correct: "Lena", wrong: "den Lena" },
+                    { correct: "ihr", wrong: "ihm" },
+                    { correct: "dem Geburtstagskind", wrong: "das Geburtstagskind" },
+                    { correct: "seiner Schwester", wrong: "seine Schwester" },
+                    { correct: "mir", wrong: "mich" },
+                    { correct: "den Gästen", wrong: "die Gäste" },
+                    { correct: "ihnen", wrong: "sie" },
+                    { correct: "Lena", wrong: "die Lena" },
+                    { correct: "ihr", wrong: "sie" },
+                    { correct: "den Kindern", wrong: "die Kinder" },
+                    { correct: "jedem Kind", wrong: "jedes Kind" },
+                    { correct: "allen Gästen", wrong: "alle Gäste" },
+                    { correct: "ihre Freunde", wrong: "ihren Freunde" },
+                    { correct: "mir", wrong: "mich" },
+                    { correct: "ihren", wrong: "ihre" },
+                    { correct: "den", wrong: "die" },
+                    { correct: "ihm", wrong: "ihn" }
+                ],
+                text: `Morgen feiert Lena ihren 25. Geburtstag. Sie schickt <gap0/> Freunden eine Einladung. Tom bringt <gap1/> einen Kuchen mit. "Ich backe <gap2/> den Kuchen selbst", sagt Tom zu Lena. Maria schenkt <gap3/> ein Buch über Fotografie. "Ich gebe <gap4/> das Buch auf der Party", sagt Maria. Alle Gäste bringen <gap5/> kleine Geschenke. Max kauft <gap6/> Blumen. Er zeigt <gap7/> die Blumen vorher. Die Party beginnt um 18 Uhr. Lena kocht <gap8/> ein leckeres Essen. Sie stellt <gap9/> auch verschiedene Getränke zur Verfügung. Tom hilft <gap10/> beim Dekorieren. Er hängt <gap11/> bunte Luftballons auf. Maria bringt <gap12/> Süßigkeiten mit. Sie gibt <gap13/> eine kleine Tüte. Am Ende dankt Lena <gap14/> für die schönen Geschenke. Sie umarmt <gap15/> herzlich. "Ihr macht <gap16/> eine große Freude", sagt sie. Max gratuliert <gap17/> Freunden zum Fest. Er bringt <gap18/> Kindern auch Spiele mit. Lena dankt <gap19/> am Ende noch einmal.`,
+                comprehension: [
+                    {
+                        question: "Wann beginnt Lenas Party?",
+                        options: ["Um 17 Uhr", "Um 18 Uhr", "Um 19 Uhr", "Um 20 Uhr"],
+                        correct: 1
+                    },
+                    {
+                        question: "Was schenkt Maria Lena?",
+                        options: ["Blumen", "Einen Kuchen", "Ein Buch über Fotografie", "Süßigkeiten"],
+                        correct: 2
+                    },
+                    {
+                        question: "Wer backt den Kuchen selbst?",
+                        options: ["Lena", "Tom", "Maria", "Max"],
+                        correct: 1
+                    },
+                    {
+                        question: "Was kauft Max seiner Schwester?",
+                        options: ["Ein Buch", "Einen Kuchen", "Blumen", "Luftballons"],
+                        correct: 2
+                    },
+                    {
+                        question: "Wer hilft Lena beim Dekorieren?",
+                        options: ["Maria", "Max", "Tom", "Die Kinder"],
+                        correct: 2
+                    }
+                ],
+                trueFalse: [
+                    { statement: "Lena feiert ihren 30. Geburtstag.", answer: false },
+                    { statement: "Tom kauft den Kuchen im Supermarkt.", answer: false },
+                    { statement: "Maria schenkt ein Buch über Fotografie.", answer: true },
+                    { statement: "Die Party beginnt um 19 Uhr.", answer: false },
+                    { statement: "Max bringt seiner Schwester Blumen.", answer: true }
+                ],
+                ordering: [
+                    { words: ["schenke", "ich", "das Buch", "dir"], answer: "Ich schenke dir das Buch." },
+                    { words: ["gibt", "Maria", "der Freundin", "ein Geschenk"], answer: "Maria gibt der Freundin ein Geschenk." },
+                    { words: ["bringt", "Tom", "den Kuchen", "ihr"], answer: "Tom bringt ihr den Kuchen." },
+                    { words: ["kaufe", "ich", "meiner Mutter", "Blumen"], answer: "Ich kaufe meiner Mutter Blumen." },
+                    { words: ["zeigt", "er", "uns", "die Fotos"], answer: "Er zeigt uns die Fotos." },
+                    { words: ["kocht", "Lena", "den Gästen", "Essen"], answer: "Lena kocht den Gästen Essen." },
+                    { words: ["gebe", "ich", "ihm", "ein Buch"], answer: "Ich gebe ihm ein Buch." },
+                    { words: ["schenkt", "sie", "ihrer Tochter", "eine Puppe"], answer: "Sie schenkt ihrer Tochter eine Puppe." },
+                    { words: ["bringt", "Max", "den Kindern", "Süßigkeiten"], answer: "Max bringt den Kindern Süßigkeiten." },
+                    { words: ["zeige", "ich", "dir", "mein Auto"], answer: "Ich zeige dir mein Auto." }
+                ],
+                gaps: [
+                    { sentence: "Ich schenke ___ (meine Schwester) eine Tasche.", answer: "meiner Schwester" },
+                    { sentence: "Gibst du ___ (ich) das Buch?", answer: "mir" },
+                    { sentence: "Er zeigt ___ (die Kinder) die Geschenke.", answer: "den Kindern" },
+                    { sentence: "Wir bringen ___ (du) Blumen mit.", answer: "dir" },
+                    { sentence: "Sie kauft ___ (ihr Mann) eine Uhr.", answer: "ihrem Mann" },
+                    { sentence: "Ich gebe ___ (mein Freund) einen Rat.", answer: "meinem Freund" },
+                    { sentence: "Er schenkt ___ (seine Eltern) eine Reise.", answer: "seinen Eltern" },
+                    { sentence: "Bringst du ___ (wir) etwas mit?", answer: "uns" },
+                    { sentence: "Sie zeigt ___ (sie/singular) die Fotos.", answer: "ihr" },
+                    { sentence: "Ich kaufe ___ (meine Tochter) ein Spielzeug.", answer: "meiner Tochter" }
+                ]
+            },
+            gold: {
+                name: "🥇 Gold-Liga",
+                color: "#FFD700",
+                readingOnly: true,
+                text: `Lisa und Marc heiraten am Samstag. Sie laden <mark>ihre Familien</mark> zur Hochzeit ein. Lisas Eltern schenken <mark>dem Brautpaar</mark> eine Reise nach Italien. "Wir buchen <mark>euch</mark> das Hotel schon jetzt", sagt der Vater. Marcs Bruder kauft <mark>der Braut</mark> einen goldenen Ring. Die Trauzeugen organisieren <mark>den Gästen</mark> ein Überraschungsprogramm. Lisa schreibt <mark>ihren Gästen</mark> persönliche Dankeskarten. Der Koch bereitet <mark>allen</mark> ein festliches Menü vor. Marc gibt <mark>seiner Frau</mark> ein Versprechen: "Ich zeige <mark>dir</mark> jeden Tag meine Liebe." Die Gäste bringen <mark>dem Paar</mark> viele Geschenke. Einige schenken <mark>ihnen</mark> Geld für die Hochzeitsreise. Andere kaufen <mark>dem jungen Paar</mark> Dinge für die neue Wohnung. Die Großmutter gibt <mark>Lisa</mark> ihren alten Schmuck. "Ich schenke <mark>dir</mark> diese Kette von meiner Mutter", sagt sie. Die Schwester zeigt <mark>allen</mark> ein Video aus der Kindheit. Marc dankt <mark>seinen Eltern</mark> für die Unterstützung. Er umarmt <mark>sie</mark> vor allen Gästen. Lisa wirft <mark>den unverheirateten Frauen</mark> den Brautstrauß zu.`,
+                comprehension: [
+                    {
+                        question: "Was schenken Lisas Eltern dem Brautpaar?",
+                        options: ["Einen goldenen Ring", "Eine Reise nach Italien", "Ein festliches Menü", "Geld"],
+                        correct: 1
+                    },
+                    {
+                        question: "Wer organisiert das Überraschungsprogramm?",
+                        options: ["Lisas Eltern", "Der Koch", "Die Trauzeugen", "Marcs Bruder"],
+                        correct: 2
+                    },
+                    {
+                        question: "Was kauft Marcs Bruder der Braut?",
+                        options: ["Eine Kette", "Einen goldenen Ring", "Blumen", "Ein Kleid"],
+                        correct: 1
+                    },
+                    {
+                        question: "Was gibt die Großmutter Lisa?",
+                        options: ["Geld", "Ein Video", "Ihren alten Schmuck", "Einen Brautstrauß"],
+                        correct: 2
+                    },
+                    {
+                        question: "Wem wirft Lisa den Brautstrauß zu?",
+                        options: ["Den Kindern", "Den unverheirateten Frauen", "Ihrer Mutter", "Den Trauzeugen"],
+                        correct: 1
+                    }
+                ],
+                trueFalse: [
+                    { statement: "Das Brautpaar bezahlt das Hotel in Italien selbst.", answer: false },
+                    { statement: "Marcs Bruder schenkt der Braut einen Ring.", answer: true },
+                    { statement: "Lisa schreibt den Gästen E-Mails.", answer: false },
+                    { statement: "Die Großmutter schenkt Lisa eine Kette von ihrer Mutter.", answer: true },
+                    { statement: "Marc dankt seinen Eltern vor allen Gästen.", answer: true }
+                ],
+                ordering: [
+                    { words: ["schenken", "die Eltern", "dem Paar", "eine Reise"], answer: "Die Eltern schenken dem Paar eine Reise." },
+                    { words: ["kauft", "der Bruder", "der Braut", "einen Ring"], answer: "Der Bruder kauft der Braut einen Ring." },
+                    { words: ["zeige", "ich", "dir", "meine Liebe"], answer: "Ich zeige dir meine Liebe." },
+                    { words: ["bringen", "die Gäste", "dem Paar", "Geschenke"], answer: "Die Gäste bringen dem Paar Geschenke." },
+                    { words: ["gibt", "die Großmutter", "Lisa", "ihren Schmuck"], answer: "Die Großmutter gibt Lisa ihren Schmuck." },
+                    { words: ["schreiben", "wir", "den Gästen", "Dankeskarten"], answer: "Wir schreiben den Gästen Dankeskarten." },
+                    { words: ["bereitet", "der Koch", "allen", "ein Menü vor"], answer: "Der Koch bereitet allen ein Menü vor." },
+                    { words: ["dankt", "Marc", "seinen Eltern", "für die Hilfe"], answer: "Marc dankt seinen Eltern für die Hilfe." },
+                    { words: ["wirft", "Lisa", "den Frauen", "den Strauß zu"], answer: "Lisa wirft den Frauen den Strauß zu." },
+                    { words: ["zeigt", "die Schwester", "allen", "ein Video"], answer: "Die Schwester zeigt allen ein Video." }
+                ],
+                gaps: [
+                    { sentence: "Die Eltern schenken ___ (das Brautpaar) eine Reise.", answer: "dem Brautpaar" },
+                    { sentence: "Ich gebe ___ (meine Frau) ein Versprechen.", answer: "meiner Frau" },
+                    { sentence: "Sie kaufen ___ (die Braut) einen Ring.", answer: "der Braut" },
+                    { sentence: "Wir zeigen ___ (sie/singular) unsere Liebe.", answer: "ihr" },
+                    { sentence: "Er dankt ___ (seine Eltern) für alles.", answer: "seinen Eltern" },
+                    { sentence: "Die Gäste bringen ___ (das junge Paar) Geschenke.", answer: "dem jungen Paar" },
+                    { sentence: "Sie schreibt ___ (die Gäste) Dankeskarten.", answer: "den Gästen" },
+                    { sentence: "Ich schenke ___ (du) diese Kette.", answer: "dir" },
+                    { sentence: "Er organisiert ___ (wir) ein Programm.", answer: "uns" },
+                    { sentence: "Sie wirft ___ (die Frauen) den Strauß zu.", answer: "den Frauen" }
+                ]
+            },
+            diamond: {
+                name: "💎 Diamant-Liga",
+                color: "#00D4FF",
+                text: `Die Familie Weber feiert Weihnachten. Die Mutter backt <gap>den Kindern</gap> <small>(die Kinder)</small> Plätzchen. Der Vater kauft <gap>seiner Frau</gap> <small>(seine Frau)</small> ein schönes Armband. "Ich schenke <gap>dir</gap> <small>(du)</small> etwas Besonderes", sagt er. Die Großeltern bringen <gap>ihnen</gap> <small>(sie)</small> einen selbstgebackenen Stollen mit. Sie erzählen <gap>den Enkeln</gap> <small>(die Enkel)</small> Geschichten von früher. Der Sohn bastelt <gap>seinen Eltern</gap> <small>(seine Eltern)</small> eine Weihnachtskarte. Er malt <gap>ihnen</gap> <small>(sie)</small> auch ein Bild vom Tannenbaum. Die Tochter singt <gap>allen</gap> <small>(alle)</small> Weihnachtslieder vor. Sie bringt <gap>den Gästen</gap> <small>(die Gäste)</small> Freude. Der Opa gibt <gap>jedem Kind</gap> <small>(jedes Kind)</small> einen Schokoladen-Nikolaus. "Habt ihr <gap>uns</gap> <small>(wir)</small> auch etwas mitgebracht?", fragen die Kinder. Im Sommer feiert Sarah ihren Realschulabschluss. Ihre Klassenlehrerin Frau Müller überreicht <gap>ihr</gap> <small>(sie)</small> das Zeugnis persönlich. "Ich gratuliere <gap>Ihnen</gap> <small>(Sie/formell)</small> zum Abschluss", sagt die Lehrerin zu allen. Die Eltern schenken <gap>Sarah</gap> <small>(Sarah)</small> einen neuen Laptop. Der Vater erklärt <gap>ihr</gap> <small>(sie)</small>, wie man ihn benutzt. Sarahs bester Freund Max kauft <gap>ihr</gap> <small>(sie)</small> ein Fotobuch. "Ich zeige <gap>dir</gap> <small>(du)</small> später alle Fotos", sagt er. Er wünscht <gap>seiner Freundin</gap> <small>(seine Freundin)</small> alles Gute. Die Oma schickt <gap>ihrer Enkelin</gap> <small>(ihre Enkelin)</small> einen Brief mit Geld. Sie wünscht <gap>ihr</gap> <small>(sie)</small> viel Erfolg in der Ausbildung.`,
+                comprehension: [
+                    {
+                        question: "Was backt die Mutter den Kindern?",
+                        options: ["Kuchen", "Plätzchen", "Stollen", "Kekse"],
+                        correct: 1
+                    },
+                    {
+                        question: "Was schenkt der Vater seiner Frau?",
+                        options: ["Ein Armband", "Eine Kette", "Einen Ring", "Ohrringe"],
+                        correct: 0
+                    },
+                    {
+                        question: "Welchen Abschluss feiert Sarah?",
+                        options: ["Abitur", "Hauptschulabschluss", "Realschulabschluss", "Bachelor"],
+                        correct: 2
+                    },
+                    {
+                        question: "Was schenkt Max Sarah?",
+                        options: ["Einen Laptop", "Ein Fotobuch", "Geld", "Einen Brief"],
+                        correct: 1
+                    },
+                    {
+                        question: "Wer schickt Sarah einen Brief mit Geld?",
+                        options: ["Die Eltern", "Max", "Die Lehrerin", "Die Oma"],
+                        correct: 3
+                    }
+                ],
+                trueFalse: [
+                    { statement: "Die Mutter backt den Kindern einen Stollen.", answer: false },
+                    { statement: "Der Vater schenkt seiner Frau ein Armband.", answer: true },
+                    { statement: "Die Tochter singt allen Weihnachtslieder vor.", answer: true },
+                    { statement: "Sarah feiert ihr Abitur.", answer: false },
+                    { statement: "Die Oma schickt ihrer Enkelin einen Brief.", answer: true }
+                ],
+                ordering: [
+                    { words: ["backt", "die Mutter", "den Kindern", "Plätzchen"], answer: "Die Mutter backt den Kindern Plätzchen." },
+                    { words: ["kauft", "der Vater", "seiner Frau", "ein Armband"], answer: "Der Vater kauft seiner Frau ein Armband." },
+                    { words: ["bringen", "die Großeltern", "ihnen", "einen Stollen mit"], answer: "Die Großeltern bringen ihnen einen Stollen mit." },
+                    { words: ["erzählen", "sie", "den Enkeln", "Geschichten"], answer: "Sie erzählen den Enkeln Geschichten." },
+                    { words: ["bastelt", "der Sohn", "seinen Eltern", "eine Karte"], answer: "Der Sohn bastelt seinen Eltern eine Karte." },
+                    { words: ["überreicht", "die Lehrerin", "ihr", "das Zeugnis"], answer: "Die Lehrerin überreicht ihr das Zeugnis." },
+                    { words: ["schenken", "die Eltern", "Sarah", "einen Laptop"], answer: "Die Eltern schenken Sarah einen Laptop." },
+                    { words: ["kauft", "Max", "ihr", "ein Fotobuch"], answer: "Max kauft ihr ein Fotobuch." },
+                    { words: ["schickt", "die Oma", "ihrer Enkelin", "einen Brief"], answer: "Die Oma schickt ihrer Enkelin einen Brief." },
+                    { words: ["wünscht", "sie", "ihr", "viel Erfolg"], answer: "Sie wünscht ihr viel Erfolg." }
+                ],
+                gaps: [
+                    { sentence: "Die Mutter backt ___ (die Kinder) Plätzchen.", answer: "den Kindern" },
+                    { sentence: "Der Vater kauft ___ (seine Frau) ein Armband.", answer: "seiner Frau" },
+                    { sentence: "Ich schenke ___ (du) etwas Besonderes.", answer: "dir" },
+                    { sentence: "Die Großeltern bringen ___ (sie/Plural) einen Stollen mit.", answer: "ihnen" },
+                    { sentence: "Sie erzählen ___ (die Enkel) Geschichten.", answer: "den Enkeln" },
+                    { sentence: "Der Sohn bastelt ___ (seine Eltern) eine Karte.", answer: "seinen Eltern" },
+                    { sentence: "Die Lehrerin überreicht ___ (sie/feminin) das Zeugnis.", answer: "ihr" },
+                    { sentence: "Max kauft ___ (sie/feminin) ein Fotobuch.", answer: "ihr" },
+                    { sentence: "Die Oma schickt ___ (ihre Enkelin) einen Brief.", answer: "ihrer Enkelin" },
+                    { sentence: "Habt ihr ___ (wir) etwas mitgebracht?", answer: "uns" }
+                ]
+            }
+        };
+
+        let currentLeague = null;
+        let currentTask = 0;
+        let score = 0;
+        let totalTasks = 40;
+        let gapsFilled = [];
+        let currentOrderingSentence = [];
+        let taskQueue = [];
+        let userName = "";
+
+        function goHome() {
+            if (confirm('Möchtest du wirklich zur Startseite zurück? Dein Fortschritt geht verloren.')) {
+                location.reload();
+            }
+        }
+        
+        // Setup event listeners after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('taskContainer');
+            if (container) {
+                container.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('gap-choice-btn')) {
+                        const gapIndex = parseInt(e.target.dataset.gap);
+                        const isCorrect = e.target.dataset.correct === 'true';
+                        selectGap(gapIndex, isCorrect);
+                    }
+                });
+            }
+        });
+
+        function startLeague(league) {
+            const nameInput = document.getElementById('nameInput');
+            userName = nameInput.value.trim();
+            
+            if (!userName) {
+                alert('Bitte gib deinen Namen ein!');
+                nameInput.focus();
+                return;
+            }
+            
+            currentLeague = league;
+            currentTask = 0;
+            score = 0;
+            
+            // Initialize gapsFilled HIER beim Start
+            const leagueData = leagues[league];
+            if (leagueData.gapChoices) {
+                gapsFilled = new Array(leagueData.gapChoices.length).fill(false);
+                console.log(`Initialized gapsFilled for ${league} with ${leagueData.gapChoices.length} gaps`);
+            } else if (!leagueData.readingOnly) {
+                const text = leagueData.text;
+                const gapMatches = text.match(/<gap>.*?<\/gap>/g);
+                gapsFilled = new Array(gapMatches ? gapMatches.length : 0).fill(false);
+                console.log(`Initialized gapsFilled for ${league} with ${gapMatches ? gapMatches.length : 0} gaps`);
+            } else {
+                gapsFilled = [];
+            }
+            
+            currentOrderingSentence = [];
+            taskQueue = [];
+            
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('leagueTitle').textContent = leagueData.name;
+            
+            showTask();
+        }
+
+        function showTask() {
+            const container = document.getElementById('taskContainer');
+            const league = leagues[currentLeague];
+            
+            // Check if this is a reading-only league (Gold)
+            if (league.readingOnly) {
+                if (currentTask === 0) {
+                    // Show reading text on first task
+                    showReadingText(league);
+                } else if (currentTask < 6) {
+                    // Comprehension (Tasks 1-5)
+                    const questionIndex = currentTask - 1;
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4];
+                        shuffleArray(taskQueue);
+                    }
+                    showComprehension(league, taskQueue[0]);
+                } else if (currentTask < 11) {
+                    // True/False (Tasks 6-10)
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4];
+                        shuffleArray(taskQueue);
+                    }
+                    showTrueFalse(league, taskQueue[0]);
+                } else if (currentTask < 21) {
+                    // Ordering (Tasks 11-20)
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                        shuffleArray(taskQueue);
+                    }
+                    showOrdering(league, taskQueue[0]);
+                } else if (currentTask < 31) {
+                    // Gap sentences (Tasks 21-30)
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                        shuffleArray(taskQueue);
+                    }
+                    showGapSentence(league, taskQueue[0]);
+                } else {
+                    // Certificate
+                    showCertificate();
+                }
+            } else {
+                // Normal leagues (Silber, Diamant) with gap-filling
+                if (currentTask < 20) {
+                    // Lückentext (Tasks 0-19)
+                    showGapFillText(league);
+                } else if (currentTask === 20) {
+                    // Show completed text before comprehension
+                    showCompletedText(league);
+                } else if (currentTask < 26) {
+                    // Comprehension (Tasks 21-25)
+                    const questionIndex = currentTask - 21;
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4];
+                        shuffleArray(taskQueue);
+                    }
+                    showComprehension(league, taskQueue[0]);
+                } else if (currentTask < 31) {
+                    // True/False (Tasks 26-30)
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4];
+                        shuffleArray(taskQueue);
+                    }
+                    showTrueFalse(league, taskQueue[0]);
+                } else if (currentTask < 41) {
+                    // Ordering (Tasks 31-40)
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                        shuffleArray(taskQueue);
+                    }
+                    showOrdering(league, taskQueue[0]);
+                } else if (currentTask < 51) {
+                    // Gap sentences (Tasks 41-50)
+                    if (taskQueue.length === 0) {
+                        taskQueue = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+                        shuffleArray(taskQueue);
+                    }
+                    showGapSentence(league, taskQueue[0]);
+                } else {
+                    // Certificate
+                    showCertificate();
+                }
+            }
+            
+            updateProgress();
+        }
+
+        function showGapFillText(league) {
+            // Check if league uses new click-choice format or old input format
+            const useClickChoice = league.gapChoices !== undefined;
+            
+            console.log(`showGapFillText: currentTask=${currentTask}, useClickChoice=${useClickChoice}, gapsFilled:`, gapsFilled);
+            
+            const container = document.getElementById('taskContainer');
+            let text = league.text;
+            
+            if (useClickChoice) {
+                // NEW FORMAT: Click choice buttons (Silber)
+                league.gapChoices.forEach((choice, index) => {
+                    const filled = gapsFilled[index];
+                    console.log(`Gap ${index}: filled=${filled}, correct=${choice.correct}`);
+                    const gapHTML = filled 
+                        ? `<span class="gap-choice-container" id="gap${index}">
+                            <button class="gap-choice-btn gap-choice-correct" data-gap="${index}" data-correct="true" disabled>${choice.correct}</button>
+                           </span>`
+                        : `<span class="gap-choice-container" id="gap${index}">
+                            <button class="gap-choice-btn" data-gap="${index}" data-correct="true">${choice.correct}</button>
+                            <button class="gap-choice-btn" data-gap="${index}" data-correct="false">${choice.wrong}</button>
+                           </span>`;
+                    text = text.replace(`<gap${index}/>`, gapHTML);
+                });
+                
+                const allFilled = gapsFilled.every(f => f);
+                
+                container.innerHTML = `
+                    <h2>📝 Lückentext: Lies und wähle!</h2>
+                    <div class="intro-text">
+                        Klicke auf die richtige Antwort. Du hast 2 Optionen pro Lücke.
+                    </div>
+                    <div class="reading-text">${text}</div>
+                    <button class="btn-primary" onclick="checkAllGaps()" ${allFilled ? '' : 'disabled'}>
+                        ${allFilled ? '✅ Weiter zum Textverständnis' : '⏳ Wähle alle richtigen Antworten'}
+                    </button>
+                `;
+                
+            } else {
+                // OLD FORMAT: Input fields (Gold/Diamant)
+                let gapIndex = 0;
+                text = text.replace(/<gap>(.*?)<\/gap>/g, (match, answer) => {
+                    const id = `gap${gapIndex}`;
+                    const filled = gapsFilled[gapIndex];
+                    const classes = filled ? 'gap-input correct' : 'gap-input';
+                    const disabled = filled ? 'disabled' : '';
+                    const displayValue = filled ? answer : '';
+                    gapIndex++;
+                    return `<span style="display: inline-block; position: relative;">
+                            <input type="text" id="${id}" class="${classes}" data-answer="${answer}" ${disabled} value="${displayValue}"
+                            onkeypress="if(event.key==='Enter') checkGap('${id}')">
+                            ${!filled ? `<button onclick="checkGap('${id}')" style="margin-left: 5px; padding: 3px 8px; font-size: 12px; border-radius: 4px; border: 1px solid #667eea; background: #f0f4ff; color: #667eea; cursor: pointer;">✓</button>` : '✅'}
+                            </span>`;
+                });
+                
+                const allFilled = gapsFilled.every(f => f);
+                
+                console.log(`showGapFillText (OLD FORMAT): allFilled=${allFilled}, gapsFilled count=${gapsFilled.filter(f=>f).length}/${gapsFilled.length}`);
+                
+                container.innerHTML = `
+                    <h2>📝 Lückentext: Lies und ergänze!</h2>
+                    <div class="intro-text">
+                        Fülle die Lücken aus und drücke <strong>✓</strong> oder <strong>Enter</strong> zum Prüfen.
+                    </div>
+                    <div class="reading-text">${text}</div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="btn-secondary" onclick="checkAllInputs()">
+                            🔍 Alle Eingaben prüfen
+                        </button>
+                        <button class="btn-primary" onclick="checkAllGaps()" ${allFilled ? '' : 'disabled'} style="flex: 1;">
+                            ${allFilled ? '✅ Weiter zum Textverständnis' : `⏳ ${gapsFilled.filter(f=>f).length}/${gapsFilled.length} richtig`}
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function checkGap(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = input.dataset.answer.toLowerCase();
+            
+            // Flexible matching
+            const acceptable = [correctAnswer];
+            if (correctAnswer.includes(' ')) {
+                // Allow without articles
+                acceptable.push(correctAnswer.split(' ').slice(1).join(' '));
+            }
+            
+            if (acceptable.some(ans => userAnswer === ans)) {
+                // RICHTIG!
+                input.classList.remove('wrong');
+                input.classList.add('correct');
+                input.disabled = true;
+                input.value = input.dataset.answer; // Show correct capitalization
+                
+                const gapNum = parseInt(inputId.replace('gap', ''));
+                gapsFilled[gapNum] = true;
+                console.log(`Gap ${gapNum} correct! Total filled: ${gapsFilled.filter(f=>f).length}/${gapsFilled.length}`);
+                
+                // Kurze Verzögerung damit User das grüne Feedback sieht
+                setTimeout(() => {
+                    showTask(); // Refresh to check if all filled
+                }, 300);
+            } else {
+                // FALSCH!
+                input.classList.add('wrong');
+                
+                // Shake animation
+                input.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    input.style.animation = '';
+                }, 500);
+                
+                setTimeout(() => {
+                    input.classList.remove('wrong');
+                    input.value = '';
+                    input.focus();
+                }, 1200);
+            }
+        }
+
+        function selectGap(gapIndex, isCorrect) {
+            console.log(`selectGap called: index=${gapIndex}, correct=${isCorrect}, already filled=${gapsFilled[gapIndex]}`);
+            
+            if (gapsFilled[gapIndex]) return; // Already filled
+            
+            const league = leagues[currentLeague];
+            if (!league.gapChoices) return; // Only for click-choice format
+            
+            const container = document.getElementById(`gap${gapIndex}`);
+            if (!container) {
+                console.error(`Container gap${gapIndex} not found!`);
+                return;
+            }
+            
+            const buttons = container.querySelectorAll('.gap-choice-btn');
+            console.log(`Found ${buttons.length} buttons`);
+            
+            if (isCorrect) {
+                // RICHTIG: Grün machen, falschen Button entfernen
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    if (btn.textContent === league.gapChoices[gapIndex].correct) {
+                        btn.style.background = '#28a745';
+                        btn.style.color = 'white';
+                        btn.style.border = '2px solid #28a745';
+                    } else {
+                        btn.style.display = 'none';
+                    }
+                });
+                gapsFilled[gapIndex] = true;
+                console.log(`Gap ${gapIndex} marked as filled. gapsFilled:`, gapsFilled);
+                
+                // Kurz warten damit User das grüne Feedback sieht, dann refresh
+                setTimeout(() => {
+                    console.log(`Calling showTask after 500ms. gapsFilled before:`, gapsFilled);
+                    showTask();
+                }, 500);
+                
+            } else {
+                // FALSCH: Rot machen, kurz warten, dann zurücksetzen
+                buttons.forEach(btn => {
+                    if (btn.textContent === league.gapChoices[gapIndex].wrong) {
+                        btn.style.background = '#dc3545';
+                        btn.style.color = 'white';
+                        btn.style.border = '2px solid #dc3545';
+                    }
+                });
+                
+                setTimeout(() => {
+                    buttons.forEach(btn => {
+                        if (btn.textContent === league.gapChoices[gapIndex].wrong) {
+                            btn.style.background = '';
+                            btn.style.color = '';
+                            btn.style.border = '';
+                        }
+                    });
+                }, 1000);
+            }
+        }
+
+        function checkAllGaps() {
+            if (gapsFilled.every(f => f)) {
+                currentTask = 20; // Jump to showing completed text
+                score += 20;
+                showTask();
+            }
+        }
+        
+        function checkAllInputs() {
+            // Check all input fields that are not yet correct
+            const league = leagues[currentLeague];
+            if (!league.gapChoices) { // Only for input-based leagues
+                const inputs = document.querySelectorAll('.gap-input:not([disabled])');
+                console.log(`checkAllInputs: Found ${inputs.length} unchecked inputs`);
+                inputs.forEach(input => {
+                    if (input.value.trim()) {
+                        checkGap(input.id);
+                    }
+                });
+            }
+        }
+        
+        function showReadingText(league) {
+            const container = document.getElementById('taskContainer');
+            const text = league.text;
+            
+            container.innerHTML = `
+                <h2>📖 Lückentext mit Markierungen</h2>
+                <div class="intro-text">
+                    <strong>Lies den Text aufmerksam!</strong><br>
+                    Die <mark style="background: #fff3cd; padding: 2px 5px; border-radius: 3px;">markierten Wörter</mark> sind Dativ- oder Akkusativobjekte. Achte darauf, wer WEM oder WAS etwas gibt!
+                </div>
+                <div class="reading-text" style="line-height: 2;">${text}</div>
+                <button class="btn-primary" onclick="currentTask = 1; showTask();">
+                    ➡️ Weiter zu den Fragen
+                </button>
+            `;
+        }
+
+        function showCompletedText(league) {
+            const container = document.getElementById('taskContainer');
+            let text = league.text;
+            
+            if (league.gapChoices) {
+                // NEW FORMAT: Replace <gap0/> etc with answers from gapChoices
+                league.gapChoices.forEach((choice, index) => {
+                    text = text.replace(`<gap${index}/>`, `<strong style="color: #667eea;">${choice.correct}</strong>`);
+                });
+            } else {
+                // OLD FORMAT: Replace <gap>answer</gap> with answer
+                text = text.replace(/<gap>(.*?)<\/gap>/g, '<strong style="color: #667eea;">$1</strong>');
+            }
+            
+            container.innerHTML = `
+                <h2>📖 Vollständiger Text</h2>
+                <div class="intro-text">
+                    ✅ Super! Du hast alle Lücken richtig ausgefüllt! Lies den Text noch einmal. Gleich kommen Fragen dazu.
+                </div>
+                <div class="reading-text">${text}</div>
+                <button class="btn-primary" onclick="currentTask = 21; showTask();">
+                    ➡️ Weiter zu den Fragen
+                </button>
+            `;
+        }
+
+        function showComprehension(league, questionIndex) {
+            const container = document.getElementById('taskContainer');
+            const question = league.comprehension[questionIndex];
+            const shuffledOptions = [...question.options];
+            const correctAnswer = shuffledOptions[question.correct];
+            shuffleArray(shuffledOptions);
+            const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
+            
+            // Get the completed text for reference
+            let referenceText = league.text;
+            if (league.gapChoices) {
+                league.gapChoices.forEach((choice, index) => {
+                    referenceText = referenceText.replace(`<gap${index}/>`, `<strong style="color: #667eea;">${choice.correct}</strong>`);
+                });
+            } else if (league.readingOnly) {
+                // Text already has <mark> tags, keep as is
+            } else {
+                referenceText = referenceText.replace(/<gap>(.*?)<\/gap>/g, '<strong style="color: #667eea;">$1</strong>');
+            }
+            
+            const taskNumber = league.readingOnly ? currentTask : (currentTask - 20);
+            
+            container.innerHTML = `
+                <h2>❓ Textverständnis (${taskNumber}/5)</h2>
+                
+                <details style="margin-bottom: 20px;">
+                    <summary style="cursor: pointer; padding: 10px; background: #f0f4ff; border-radius: 8px; font-weight: bold;">
+                        📖 Text nochmal lesen
+                    </summary>
+                    <div class="reading-text" style="margin-top: 10px; font-size: 0.95em;">
+                        ${referenceText}
+                    </div>
+                </details>
+                
+                <div class="question-card">
+                    <div class="question-text">${question.question}</div>
+                    ${shuffledOptions.map((opt, i) => 
+                        `<button class="option-btn" onclick="checkComprehension(${i}, ${newCorrectIndex})">${opt}</button>`
+                    ).join('')}
+                </div>
+            `;
+        }
+
+        function checkComprehension(selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === correct) {
+                    btn.classList.add('correct');
+                } else if (i === selected && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            if (selected === correct) {
+                score++;
+                setTimeout(() => {
+                    taskQueue.shift();
+                    currentTask++;
+                    showTask();
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    taskQueue.push(taskQueue.shift()); // Move to end
+                    showTask();
+                }, 1500);
+            }
+        }
+
+        function showTrueFalse(league, statementIndex) {
+            const container = document.getElementById('taskContainer');
+            const statement = league.trueFalse[statementIndex];
+            
+            // Get the completed text for reference
+            let referenceText = league.text;
+            if (league.gapChoices) {
+                league.gapChoices.forEach((choice, index) => {
+                    referenceText = referenceText.replace(`<gap${index}/>`, `<strong style="color: #667eea;">${choice.correct}</strong>`);
+                });
+            } else if (league.readingOnly) {
+                // Text already has <mark> tags, keep as is
+            } else {
+                referenceText = referenceText.replace(/<gap>(.*?)<\/gap>/g, '<strong style="color: #667eea;">$1</strong>');
+            }
+            
+            const taskNumber = league.readingOnly ? (currentTask - 5) : (currentTask - 25);
+            
+            container.innerHTML = `
+                <h2>✓✗ Richtig oder Falsch? (${taskNumber}/5)</h2>
+                
+                <details style="margin-bottom: 20px;">
+                    <summary style="cursor: pointer; padding: 10px; background: #f0f4ff; border-radius: 8px; font-weight: bold;">
+                        📖 Text nochmal lesen
+                    </summary>
+                    <div class="reading-text" style="margin-top: 10px; font-size: 0.95em;">
+                        ${referenceText}
+                    </div>
+                </details>
+                
+                <div class="statement-card">
+                    <div class="statement-text">${statement.statement}</div>
+                    <div class="tf-buttons">
+                        <button class="tf-btn" onclick="checkTrueFalse(true, ${statement.answer})">Richtig</button>
+                        <button class="tf-btn" onclick="checkTrueFalse(false, ${statement.answer})">Falsch</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkTrueFalse(selected, correct) {
+            const buttons = document.querySelectorAll('.tf-btn');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            buttons[selected ? 0 : 1].classList.add('selected');
+            
+            setTimeout(() => {
+                buttons[correct ? 0 : 1].classList.add('correct');
+                if (selected !== correct) {
+                    buttons[selected ? 0 : 1].classList.add('wrong');
+                }
+            }, 300);
+            
+            if (selected === correct) {
+                score++;
+                setTimeout(() => {
+                    taskQueue.shift();
+                    currentTask++;
+                    showTask();
+                }, 1500);
+            } else {
+                setTimeout(() => {
+                    taskQueue.push(taskQueue.shift());
+                    showTask();
+                }, 1500);
+            }
+        }
+
+        function showOrdering(league, orderIndex) {
+            const container = document.getElementById('taskContainer');
+            const task = league.ordering[orderIndex];
+            const shuffled = [...task.words];
+            shuffleArray(shuffled);
+            currentOrderingSentence = [];
+            
+            container.innerHTML = `
+                <h2>🔢 Sätze ordnen (${currentTask - 30}/10)</h2>
+                <div class="intro-text">
+                    Klicke auf die Wörter in der richtigen Reihenfolge!
+                </div>
+                <div class="sentence-display" id="sentenceDisplay">
+                    <span style="color: #999;">Klicke auf Wörter...</span>
+                </div>
+                <div class="word-bank">
+                    ${shuffled.map((word, i) => 
+                        `<span class="word-chip" onclick="addWord('${word}', ${i})">${word}</span>`
+                    ).join('')}
+                </div>
+                <button class="btn-primary" onclick="checkOrdering('${task.answer}')">Prüfen</button>
+                <button class="btn-primary" onclick="resetSentence()" style="background: linear-gradient(135deg, #ff6b6b, #ee5a6f); margin-top: 10px;">↺ Zurücksetzen</button>
+            `;
+        }
+
+        function addWord(word, chipIndex) {
+            const chip = document.querySelectorAll('.word-chip')[chipIndex];
+            if (chip.classList.contains('used')) return;
+            
+            currentOrderingSentence.push(word);
+            chip.classList.add('used');
+            
+            const display = document.getElementById('sentenceDisplay');
+            display.innerHTML = currentOrderingSentence.join(' ');
+        }
+
+        function resetSentence() {
+            currentOrderingSentence = [];
+            document.querySelectorAll('.word-chip').forEach(chip => {
+                chip.classList.remove('used');
+            });
+            document.getElementById('sentenceDisplay').innerHTML = '<span style="color: #999;">Klicke auf Wörter...</span>';
+        }
+
+        function checkOrdering(correctAnswer) {
+            const userAnswer = currentOrderingSentence.join(' ');
+            const correct = normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
+            
+            if (correct) {
+                document.getElementById('sentenceDisplay').style.background = '#d4edda';
+                score++;
+                setTimeout(() => {
+                    taskQueue.shift();
+                    currentTask++;
+                    showTask();
+                }, 1500);
+            } else {
+                document.getElementById('sentenceDisplay').style.background = '#f8d7da';
+                setTimeout(() => {
+                    taskQueue.push(taskQueue.shift());
+                    showTask();
+                }, 1500);
+            }
+        }
+
+        function showGapSentence(league, gapIndex) {
+            const container = document.getElementById('taskContainer');
+            const task = league.gaps[gapIndex];
+            
+            container.innerHTML = `
+                <h2>✏️ Lückensätze (${currentTask - 40}/10)</h2>
+                <div class="question-card">
+                    <div class="question-text">${task.sentence}</div>
+                    <input type="text" id="gapAnswer" class="gap-input" style="width: 90%; margin: 20px 0;" 
+                           onkeypress="if(event.key==='Enter') checkGapSentence('${task.answer}')"
+                           placeholder="Deine Antwort hier...">
+                    <button class="btn-primary" onclick="checkGapSentence('${task.answer}')">Prüfen</button>
+                </div>
+            `;
+            document.getElementById('gapAnswer').focus();
+        }
+
+        function checkGapSentence(correctAnswer) {
+            const input = document.getElementById('gapAnswer');
+            const userAnswer = input.value.trim();
+            const correct = normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
+            
+            if (correct) {
+                input.classList.add('correct');
+                score++;
+                setTimeout(() => {
+                    taskQueue.shift();
+                    currentTask++;
+                    showTask();
+                }, 1000);
+            } else {
+                input.classList.add('wrong');
+                setTimeout(() => {
+                    input.classList.remove('wrong');
+                    input.value = '';
+                    taskQueue.push(taskQueue.shift());
+                    showTask();
+                }, 1500);
+            }
+        }
+
+        function normalizeAnswer(text) {
+            return text.toLowerCase()
+                .trim()
+                .replace(/[.!?]/g, '')
+                .replace(/\s+/g, ' ');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function updateProgress() {
+            const league = leagues[currentLeague];
+            if (league.readingOnly) {
+                // Gold: 0-30
+                const progress = (currentTask / 30) * 100;
+                const bar = document.getElementById('progressBar');
+                bar.style.width = progress + '%';
+                bar.textContent = `${currentTask}/30`;
+            } else {
+                // Silber/Diamant: 0-50
+                const progress = (currentTask / 50) * 100;
+                const bar = document.getElementById('progressBar');
+                bar.style.width = progress + '%';
+                bar.textContent = `${currentTask}/50`;
+            }
+        }
+
+        function showCertificate() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('certificate').classList.remove('hidden');
+            
+            const league = leagues[currentLeague];
+            const maxScore = league.readingOnly ? 30 : 50;
+            const percentage = Math.round((score / maxScore) * 100);
+            const date = new Date().toLocaleDateString('de-DE');
+            
+            document.getElementById('certName').textContent = userName;
+            document.getElementById('certLeague').textContent = league.name;
+            document.getElementById('certScore').textContent = `${score}/${maxScore} Punkten (${percentage}%)`;
+            document.getElementById('certDate').textContent = date;
+        }
+
+        function downloadCertificate() {
+            const cert = document.getElementById('certificate');
+            const league = leagues[currentLeague];
+            const maxScore = league.readingOnly ? 30 : 50;
+            const percentage = Math.round((score / maxScore) * 100);
+            const date = new Date().toLocaleDateString('de-DE');
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 600;
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            const gradient = ctx.createLinearGradient(0, 0, 800, 600);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 800, 600);
+            
+            // White box
+            ctx.fillStyle = 'white';
+            ctx.fillRect(50, 50, 700, 500);
+            
+            // Border
+            ctx.strokeStyle = league.color;
+            ctx.lineWidth = 10;
+            ctx.strokeRect(50, 50, 700, 500);
+            
+            // Title
+            ctx.fillStyle = '#667eea';
+            ctx.font = 'bold 48px Calibri';
+            ctx.textAlign = 'center';
+            ctx.fillText('🏆 Zertifikat 🏆', 400, 130);
+            
+            // Name
+            ctx.font = 'bold 32px Calibri';
+            ctx.fillStyle = '#333';
+            ctx.fillText(userName, 400, 190);
+            
+            // League
+            ctx.font = 'bold 30px Calibri';
+            ctx.fillStyle = '#764ba2';
+            ctx.fillText(league.name, 400, 260);
+            
+            // "hat erfolgreich abgeschlossen"
+            ctx.font = '24px Calibri';
+            ctx.fillStyle = '#555';
+            ctx.fillText('hat erfolgreich abgeschlossen', 400, 300);
+            
+            // Score
+            ctx.font = 'bold 28px Calibri';
+            ctx.fillStyle = '#333';
+            ctx.fillText(`${score}/${maxScore} Punkten (${percentage}%)`, 400, 360);
+            
+            // Date
+            ctx.font = '24px Calibri';
+            ctx.fillStyle = '#666';
+            ctx.fillText(date, 400, 420);
+            
+            // Message
+            ctx.font = 'italic 20px Calibri';
+            ctx.fillStyle = '#764ba2';
+            ctx.fillText('Leseverstehen & Grammatik erfolgreich gemeistert!', 400, 480);
+            
+            // Download
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Zertifikat_Liga_Feste_${userName.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.png`;
+                a.click();
+            });
+        }
+    </script>
+</body>
+</html>
